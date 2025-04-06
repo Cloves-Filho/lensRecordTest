@@ -5,11 +5,10 @@ import {
 } from '@snap/camera-kit';
 
 // Elementos da interface
-const liveRenderTarget = document.getElementById('canvas');
+const liveRenderTarget = document.getElementById('canvasCam');
 const videoContainer = document.getElementById('video-container');
 const videoTarget = document.getElementById('video');
-const startRecordingButton = document.getElementById('startRecord');
-const stopRecordingButton = document.getElementById('stopRecord');
+const isRecordingButton = document.getElementById('isRecording');
 const downloadButton = document.getElementById('download');
 const lensSelector = document.getElementById('lenses');
 const cameraSelector = document.getElementById('cameras');
@@ -19,6 +18,10 @@ let mediaRecorder;
 let downloadUrl;
 let session;
 let currentMediaStream;
+let isRecording = false;
+
+
+
 
 async function init() {
   const cameraKit = await bootstrapCameraKit({
@@ -95,41 +98,55 @@ function attachLensesToSelect(lenses, session) {
 }
 
 function bindRecorder(canvas) {
-  startRecordingButton.addEventListener('click', async () => {
-    startRecordingButton.disabled = true;
-    stopRecordingButton.disabled = false;
-    downloadButton.disabled = true;
-    videoContainer.style.display = 'none';
 
-    const videoStream = canvas.captureStream(30);
-    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  isRecordingButton.addEventListener("click", async () => {
+    isRecording = !isRecording;
+    isRecordingButton.classList.toggle("recording", isRecording);
+  
+    if (isRecording) {
+      console.log("Gravando...");
+      // iniciar gravação aqui
+      downloadButton.disabled = true;
+      videoContainer.style.display = 'none';
+  
+      const videoStream = canvas.captureStream(30);
+      const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  
+      const combinedStream = new MediaStream([
+        ...videoStream.getVideoTracks(),
+        ...audioStream.getAudioTracks(),
+      ]);
+  
+      mediaRecorder = new MediaRecorder(combinedStream);
+  
+      mediaRecorder.addEventListener('dataavailable', (event) => {
+        if (!event.data.size) return;
+  
+        const blob = new Blob([event.data], { type: 'video/webm' });
+        downloadUrl = URL.createObjectURL(blob);
+  
+        videoTarget.src = downloadUrl;
+        videoContainer.style.display = 'block';
+        downloadButton.disabled = false;
+      });
+  
+      mediaRecorder.start();
 
-    const combinedStream = new MediaStream([
-      ...videoStream.getVideoTracks(),
-      ...audioStream.getAudioTracks(),
-    ]);
-
-    mediaRecorder = new MediaRecorder(combinedStream);
-
-    mediaRecorder.addEventListener('dataavailable', (event) => {
-      if (!event.data.size) return;
-
-      const blob = new Blob([event.data], { type: 'video/webm' });
-      downloadUrl = URL.createObjectURL(blob);
-
-      videoTarget.src = downloadUrl;
-      videoContainer.style.display = 'block';
-      downloadButton.disabled = false;
-    });
-
-    mediaRecorder.start();
+    }
+    
+    else {
+      
+      setTimeout(() => {
+        console.log("Parou de gravar.");
+        isRecordingButton.disabled = true;
+        mediaRecorder?.stop();
+      }, 500);
+      
+     
+    }
   });
 
-  stopRecordingButton.addEventListener('click', () => {
-    startRecordingButton.disabled = false;
-    stopRecordingButton.disabled = true;
-    mediaRecorder?.stop();
-  });
+
 
   downloadButton.addEventListener('click', () => {
     const link = document.createElement('a');

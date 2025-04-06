@@ -9,21 +9,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#canvasWrapper {
-  position: relative;
-  display: inline-block;
-}
-
-
-
-
-canvas#cameraCanvas {
-  width: 100vw;
-  height: 100vh;
-  display: block;
-}
-
-
 
 body {
   color: rgba(255, 255, 255, 0.87);
@@ -37,23 +22,38 @@ body {
 }
 
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #71ee77;
-}
-
-
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+.button-container {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.record-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.record-button.recording {
+  background-color: darkred;
+  transform: scale(0.9);
+}
+
+#canvasCam{
+  max-height: 50vw;
+
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -65,6 +65,9 @@ button {
   cursor: pointer;
   transition: border-color 0.55s;
 }
+
+
+
 button:hover {
   border-color: #646cff;
 }
