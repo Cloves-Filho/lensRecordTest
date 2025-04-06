@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/src/style.css" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <h1>Oi</h1>
+    <div id="canvasWrapper" style="position: relative;">
+      <div>
+        <select id="cameras"></select>
+        <select id="lenses"></select>
+      </div>
+      <canvas id="canvas"></canvas>
+     
+      <div class="button-container">
+        <button id="startRecord">Gravar</button>
+        <button id="stopRecord" disabled>Parar</button>
+      </div>
+     
+    </section>
+    <section id="video-container" style="display: none">
+      <video loop controls autoplay id="video"></video>
+      <div>
+        <button id="download">Download Video</button>
+      </div>
+    </section>
+
+    
+    
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
